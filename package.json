@@ -8,5 +8,9 @@
     "start": "node server.js"
   },
   "author": "Md. Hussainul Islam Sajib",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.2"
+  }
 }
