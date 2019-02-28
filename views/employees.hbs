@@ -1,0 +1,84 @@
+<h2>Details of Employees</h2>
+<form action="/employees" method="POST">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id">Employee Name</label>
+                <select name="id" id="id" class="form-control">
+                {{#each employee}}
+                    <option value="{{_id}}">{{fName}} {{lName}}</option>
+                {{/each}}
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="button" id="employeeQuery" class="btn btn-primary btn-sm">Query</button>
+                <button type="button" id="employeeUpdate" class="btn btn-primary btn-sm">Update</button>
+                <button type="button" id="employeeDelete" class="btn btn-primary btn-sm">Delete</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive-sm" id="employeeQueryPosition">
+    <table class="table table-dark table-sm">
+        <thead>
+            <tr>
+                <th scope="col">ID: </th>
+                <td id="tableID"></td>
+            </tr>
+            <tr>
+                <th scope="col">First Name: </th>
+                <td id="tablefName"></td>
+            </tr>
+            <tr>
+                <th scope="col">Last Name: </th>
+                <td id="tablelName"></td>
+            </tr>
+            <tr>
+                <th scope="col">Email: </th>
+                <td id="tableEmail"></td>
+            </tr>
+            <tr>
+                <th scope="col">Designation: </th>
+                <td id="tableDesignation"></td>
+            </tr>
+            <tr>
+                <th scope="col">Department: </th>
+                <td id="tableDepartment"></td>
+            </tr>
+            <tr>
+                <th scope="col">Address Line 1: </th>
+                <td id="tableAddress1"></td>
+            </tr>
+            <tr>
+                <th scope="col">Address Line 2: </th>
+                <td id="tableAddress2"></td>
+            </tr>
+            <tr>
+                <th scope="col">Apartment No: </th>
+                <td id="tableApartment"></td>
+            </tr>
+            <tr>
+                <th scope="col">City: </th>
+                <td id="tableCity"></td>
+            </tr>
+            <tr>
+                <th scope="col">Province: </th>
+                <td id="tableProvince"></td>
+            </tr>
+            <tr>
+                <th scope="col">Postal: </th>
+                <td id="tablePostal"></td>
+            </tr>
+            <tr>
+                <th scope="col">Date of Birth: </th>
+                <td id="tabledob"></td>
+            </tr>
+            <tr>
+                <th scope="col">Status: </th>
+                <td id="tableStatus"></td>
+            </tr>
+        </thead>
+
+    </table>
+</div>
