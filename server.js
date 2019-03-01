@@ -109,8 +109,15 @@ app.delete("/employees",(request,response)=>{
     })
 });
 
-app.put("/employees",(request,response)=>{
-    response.json({message: "Data updated"});
+// app.put("/employees",(request,response)=>{
+//     console.log("The first one is working");
+//     response.redirect('/updateemployee');
+//     //response.json({message: "Data updated"});
+// });
+
+app.get("/updateemployee",(request,response)=>{
+    console.log("the second one is also working");
+    response.render('updateEmployee');
 });
 
 app.get("/addemployee",(request,response)=>{

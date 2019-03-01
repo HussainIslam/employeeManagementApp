@@ -75,21 +75,23 @@ window.addEventListener('load',()=>{
         }
     });
 
-    empUp.addEventListener("click",()=>{
+    empUp.addEventListener('click',()=>{
         let select = document.querySelector('#id');
         let option = select.options[select.selectedIndex].value;
         const httpRequest = new XMLHttpRequest();
-        httpRequest.open("PUT","/employees",true);
+        httpRequest.open("GET","/updateemployee");
         httpRequest.setRequestHeader("Content-Type","application/json");
+        console.log(option);
         httpRequest.send(JSON.stringify({id: option}));
-        httpRequest.onreadystatechange = () =>{
-            if(httpRequest.readyState == 4){
-                if(httpRequest == 200){
-                    console.log("working");
-                    let response = JSON.parse(httpRequest.responseText);
-                    alert(response.message);
-                }
-            }
-        }
+        httpRequest.close();
+        // httpRequest.onreadystatechange = () =>{
+        //     if(httpRequest.readyState == 4){
+        //         if(httpRequest.status == 200){
+        //             httpRequest.close();
+        //             //let response = JSON.parse(httpRequest.responseText);
+        //             //alert(response.message);
+        //         }
+        //     }
+        // }
     });
 });
