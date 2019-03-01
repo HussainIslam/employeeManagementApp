@@ -1,0 +1,137 @@
+<form action="/addemployee" method="POST" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fname">First Name: </label>
+                <input type="text" class="form-control" id="fname" name="fName" placeholder="First Name">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="lname">Last Name: </label>
+                <input type="text" class="form-control" id="lname" name="lName" placeholder="Last Name">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="email">Email: </label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="name">Designation: </label>
+                <input type="text" class="form-control" id="designation" name="designation" placeholder="Designation" >
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="department">Deparment: </label>
+                <select name="department" id="department" class="form-control">
+                    <option value="Sales">Sales</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Human Resources">Human Resources</option>
+                    <option value="Procurement">Procurement</option>
+                    <option value="Maintenance">Maintenance</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="address1">Addres Line 1: </label>
+                <input type="text" class="form-control" id="addess1" name="address1" placeholder="Addrss Line 1">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="address2">Address Line 2: </label>
+                <input type="text" class="form-control" id="address2" name="address2" placeholder="Address Line 2">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="apartment">Apartment: </label>
+                <input type="text" class="form-control" id="apartment" name="apartment" placeholder="Apartment#">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="city">City: </label>
+                <input type="text" class="form-control" id="city" name="city" placeholder="City">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="provice">Provice: </label>
+                <input type="text" class="form-control" id="province" name="province" placeholder="Province">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="postal">Postal Code: </label>
+                <input type="text" class="form-control" id="postal" name="postal" placeholder="Postal Code">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="managerid">Manager ID: </label>
+                <input type="text" class="form-control" id="managerid" name="managerid" placeholder="Manager ID">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="dob">Date of Birth: </label>
+                <input type="date" class="form-control" id="dob"  name="dob">
+            </div>
+        </div>
+        <br>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Status: </label><br>
+                <label class="checkbox-inline">
+                    <input type="radio" id="fulltime" name="status" value="fulltime" checked> Full Time
+                </label>
+                <label class="checkbox-inline">
+                    <input type="radio" id="parttime" name="status" value="parttime"> Part Time
+                </label>
+                <label class="checkbox-inline">
+                    <input type="radio" id="contractual" name="status" value="contractual"> Contractual
+                </label>
+                <label class="checkbox-inline">
+                    <input type="radio" id="intern" name="status" value="intern"> Intern
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="employeeimage">Employee Image</label>
+                <input type="file" class="form-control-file" id="employeeimage" name="employeeimage">
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <button type="submit" id="submit" class="btn btn-primary btn-md btn-block">Submit</button>
+                <button type="reset" id="reset" class="btn btn-danger btn-md btn-block">Reset</button>
+            </div>
+        </div>
+    </div>
+
+</form>
