@@ -11,7 +11,8 @@ const exphbs = require('express-handlebars');
 const HTTP_PORT = process.env.PORT || 8080;
 //app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-mongoose.connect("mongodb://localhost:27017/restful",{useNewUrlParser: true});
+var uri = "mongodb://hussain:Junk%406204@web322-shard-00-00-o4pvl.mongodb.net:27017,web322-shard-00-01-o4pvl.mongodb.net:27017,web322-shard-00-02-o4pvl.mongodb.net:27017/test?ssl=true&replicaSet=web322-shard-0&authSource=admin&retryWrites=truemongodb://localhost:27017/restful"
+mongoose.connect(uri,{useNewUrlParser: true});
 var employeedb = new Schema({
     fName: String,
     lName: String,
