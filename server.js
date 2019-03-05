@@ -25,21 +25,8 @@ var imageupload = multer({storage: imagestorage });
 mongoose.set('useFindAndModify', false);
 const Schema = mongoose.Schema;
 const HTTP_PORT = process.env.PORT || 8080;
-//app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-utilities_db.connect();
-var employeedb = utilities_db.employeedb;
-var database = mongoose.model("employeedb",employeedb);
-var connection = mongoose.connection;
-
-connection.once("open",()=>{
-    console.log("Database connected");
-    database.find({})
-    .exec()
-    .then((data)=>{
-       // console.log(data);
-    })
-});
+var database = mongoose.model("employeedb",utilities_db.employeedb);
 
 app.engine('.hbs',exphbs({
     extname: '.hbs',
@@ -119,7 +106,6 @@ app.get("/addemployee",(request,response)=>{
 });
 
 app.post("/addemployee",imageupload.single('employeeimage'),(request,response,next)=>{
-    /*
     utilities_db.insertData(request.body)
     .then((data)=>{
         console.log(data);
@@ -128,15 +114,6 @@ app.post("/addemployee",imageupload.single('employeeimage'),(request,response,ne
     .catch((error)=>{
         response.json({error: error});
     })
-    */
-    let employeeData = new database(request.body);
-    employeeData.save((error)=>{
-        if(error){
-            response.send(error);
-        } else {
-            response.redirect("/");
-        }
-    });
 });
 
 app.get("/batchupload",(request,response)=>{
@@ -145,14 +122,26 @@ app.get("/batchupload",(request,response)=>{
 });
 
 app.post("/batchupload",bulkupload.single('datafile'),(request,response)=>{
+    var successful = 0;
     utilities.fileRead()
     .then((data)=>{
-        console.log(data);
+        for(let i = 0; i < data.length; i++){
+            utilities_db.insertData(data[i])
+            .then(()=>{
+                successful++;
+                if( i == data.length -1 ){
+                    console.log(`Successfully inserted ${successful} records`);
+                    response.redirect('/');
+                }
+            })
+            .catch((error)=>{
+                console.log(`Error in bulk data insertion ${error}`);
+            })
+        }
     })
     .catch((error)=>{
-        console.log(`Error: ${error}`);
+        response.send({message: error});
     })
-    response.send("file uploaded");
 });
 
 app.get("/images",(request,response)=>{

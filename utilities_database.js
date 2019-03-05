@@ -1,20 +1,12 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const uri = "mongodb://localhost:27017/restful";
+const Schema = mongoose.Schema;
 var connection = mongoose.connection;
-module.exports.connect = ()=>{
-    return new Promise((resolve,reject)=>{
-        mongoose.connect(uri,{useNewUrlParser: true})
-        .then(()=>{
-            resolve();
-        })
-        .catch((error)=>{
-            reject("Error while connecting");
-        })
-    })
-}
+mongoose.connect(uri,{useNewUrlParser: true})
+.then(()=>{ console.log(`Database Connection Established`); })
+.catch((error)=>{ console.log(`There was an error while connecting to database: ${error}`); })
 
-module.exports.employeedb = new Schema({
+var EmployeeDB = new Schema({
     fName: String,
     lName: String,
     email: String,
@@ -38,6 +30,7 @@ module.exports.employeedb = new Schema({
     }
 });
 
+var database = mongoose.model("employeedb",EmployeeDB);
 module.exports.database = ()=>{
     return new Promise((resolve,reject)=>{
         mongoose.model("employeedb",employeedb)
@@ -66,20 +59,22 @@ module.exports.connection = ()=>{
     })
 }
 
-module.exports.insertData = (data)=>{
-    return new Promise ((resolve,reject)=>{
+var insertData = (data) =>{
+    return new Promise((resolve, reject) => {
         let employeeData = new database(data);
-        employeeData.save((error)=>{
-            if(!error){
+        employeeData.save((error) => {
+            if (!error) {
                 resolve("Data Successfully Inserted into database");
-            } else {
+            }
+            else {
                 reject(`There was an error inserting data: ${error}`);
             }
         });
-    })
+    });
 }
 
     
-
-
-
+module.exports = EmployeeDB;
+module.exports = {
+    insertData: insertData
+}
