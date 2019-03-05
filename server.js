@@ -4,7 +4,9 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const utilities = require('./utilities');
+const utilities_db = require('./utilities_database');
 const multer = require('multer');
+const exphbs = require('express-handlebars');
 const imagestorage = multer.diskStorage({
     destination: "./public/empImages",
     filename: (request,file,cb)=>{
@@ -22,35 +24,11 @@ var imageupload = multer({storage: imagestorage });
 
 mongoose.set('useFindAndModify', false);
 const Schema = mongoose.Schema;
-const exphbs = require('express-handlebars');
 const HTTP_PORT = process.env.PORT || 8080;
 //app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-var uri = "mongodb://localhost:27017/restful"
-mongoose.connect(uri,{useNewUrlParser: true});
-var employeedb = new Schema({
-    fName: String,
-    lName: String,
-    email: String,
-    designation: String,
-    department: String,
-    address1: {
-        type: String,
-        required: true
-    },
-    address2: String,
-    apartment: Number,
-    city: String,
-    province: String,
-    postal: String,
-    mangerid: Number,
-    dob: Date,
-    status: String,
-    employeeimage: {
-        data: Buffer,
-        contentType: String
-    }
-});
+utilities_db.connect();
+var employeedb = utilities_db.employeedb;
 var database = mongoose.model("employeedb",employeedb);
 var connection = mongoose.connection;
 
@@ -141,6 +119,16 @@ app.get("/addemployee",(request,response)=>{
 });
 
 app.post("/addemployee",imageupload.single('employeeimage'),(request,response,next)=>{
+    /*
+    utilities_db.insertData(request.body)
+    .then((data)=>{
+        console.log(data);
+        response.redirect('/');
+    })
+    .catch((error)=>{
+        response.json({error: error});
+    })
+    */
     let employeeData = new database(request.body);
     employeeData.save((error)=>{
         if(error){
