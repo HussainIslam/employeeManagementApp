@@ -3,8 +3,23 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const utilities = require('./utilities');
 const multer = require('multer');
-var upload = multer();
+const imagestorage = multer.diskStorage({
+    destination: "./public/empImages",
+    filename: (request,file,cb)=>{
+        cb(null,Date.now() + path.extname(file.originalname));
+    }
+});
+const bulkstorage = multer.diskStorage({
+    destination: "./public/datadirectory",
+    filename: (request,file,cb)=>{
+        cb(null,Date.now() + path.extname(file.originalname));
+    }
+});
+var bulkupload = multer({storage: bulkstorage});
+var imageupload = multer({storage: imagestorage });
+
 mongoose.set('useFindAndModify', false);
 const Schema = mongoose.Schema;
 const exphbs = require('express-handlebars');
@@ -109,14 +124,15 @@ app.delete("/employees",(request,response)=>{
     })
 });
 
-// app.put("/employees",(request,response)=>{
-//     console.log("The first one is working");
-//     response.redirect('/updateemployee');
-//     //response.json({message: "Data updated"});
-// });
+app.put("/employees",(request,response)=>{
+    console.log("The first one is working");
+    response.redirect('/updateemployee');
+    response.json({message: "Data updated"});
+});
 
 app.get("/updateemployee",(request,response)=>{
     console.log("the second one is also working");
+    //response.json({message: "data updated"});
     response.render('updateEmployee');
 });
 
@@ -124,7 +140,7 @@ app.get("/addemployee",(request,response)=>{
     response.render('addemployee');
 });
 
-app.post("/addemployee",upload.single('employeeimage'),(request,response,next)=>{
+app.post("/addemployee",imageupload.single('employeeimage'),(request,response,next)=>{
     let employeeData = new database(request.body);
     employeeData.save((error)=>{
         if(error){
@@ -135,8 +151,37 @@ app.post("/addemployee",upload.single('employeeimage'),(request,response,next)=>
     });
 });
 
+app.get("/batchupload",(request,response)=>{
+    //utilities.fileRead();
+    response.render("batchupload");
+});
+
+app.post("/batchupload",bulkupload.single('datafile'),(request,response)=>{
+    utilities.fileRead()
+    .then((data)=>{
+        console.log(data);
+    })
+    .catch((error)=>{
+        console.log(`Error: ${error}`);
+    })
+    response.send("file uploaded");
+});
+
 app.get("/images",(request,response)=>{
-    response.render('images');
+    utilities.getAllImages()
+    .then((data)=>{
+        //console.log(data);
+        response.render('images',{
+            images: data
+        })
+    })
+    .catch((error)=>{
+        console.log("not working");
+        response.render('images',{
+            error: error
+        })
+    });
+    //response.render('images');
 });
 
 app.listen(HTTP_PORT,()=>{
