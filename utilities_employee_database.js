@@ -50,6 +50,15 @@ module.exports.initializeDatabase = ()=>{
     })
 }
 
+//fetch all employee information from postgres
+module.exports.getAllEmployees =()=>{
+    return new Promise((resolve,reject)=>{
+        Employee.findAll()
+        .then(data=>resolve(data))
+        .catch(error=>reject(`Unable to fetch all employees from database. Error: ${error}`))
+    })
+}
+
 var EmployeeDB = new Schema({
     fName: String,
     lName: String,

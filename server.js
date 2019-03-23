@@ -4,21 +4,24 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const utilities = require('./utilities');
-const utilities_db = require('./utilities_database');
+const utilities_db = require('./utilities_employee_database');
 const multer = require('multer');
 const exphbs = require('express-handlebars');
+//defining multer diskStorage for employee images
 const imagestorage = multer.diskStorage({
     destination: "./public/empImages",
     filename: (request,file,cb)=>{
         cb(null,Date.now() + path.extname(file.originalname));
     }
 });
+//defining multer diskStorage for bulk employee information upload
 const bulkstorage = multer.diskStorage({
     destination: "./public/datadirectory",
     filename: (request,file,cb)=>{
         cb(null,Date.now() + path.extname(file.originalname));
     }
 });
+//mapping the storages for both images and employee information
 var bulkupload = multer({storage: bulkstorage});
 var imageupload = multer({storage: imagestorage });
 
@@ -52,9 +55,14 @@ app.use((request,response,next)=>{
     next(); 
 });
 
-
 app.get("/",(request,response)=>{
     response.render('index');
+});
+
+app.get("/getAllEmployees",(request,response)=>{
+    utilities_db.getAllEmployees()
+    .then(data=> response.render("getAllEmployees", {employees: data}))
+    .catch(error=> response.render("getAllEmployees", {errorMessage: error}))
 });
 
 app.get("/employees",(request,response)=>{
