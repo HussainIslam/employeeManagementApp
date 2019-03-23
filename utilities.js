@@ -82,7 +82,7 @@ module.exports.fileRead = ()=>{
                 if(error){
                     reject(error);
                 } else{
-                    //console.log(data);
+                    console.log(data);
                     resolve(data);
                 }
             });

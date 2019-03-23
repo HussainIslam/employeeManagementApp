@@ -36,7 +36,10 @@ app.engine('.hbs',exphbs({
             return '<a ' +((url == app.locals.activeRoute) ? 'class="nav-item nav-link active"' : 'class= "nav-item nav-link"')
                     +' href="' + url + '">' + options.fn(this) + ((url == app.locals.activeRoute) ? '<span class="sr-only">(current)</span>' : '') 
                     +'</a>';
-        }
+        },
+        asideMenuName: (url, options)=>{
+            return (url === app.locals.activeRoute) ? options.fn(this) : "";
+        },
     }
 }));
 

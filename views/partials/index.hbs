@@ -1,0 +1,36 @@
+{{!-- {{#if index}}
+
+    <h2>Home</h2>
+    <p>This is page is coming soon</p>
+
+{{!--{{else}}
+    <h2>Other</h2>
+    <p>This is another page</p>
+
+{{!--{{/if}}
+
+--}}
+
+{{#asideMenuName "/"}}
+    <h2>Home</h2>
+    <p>This is the home page of our employee management system</p>
+{{/asideMenuName}}
+
+{{#asideMenuName "/employees"}}
+    <h2>Employees</h2>
+    <p>Please select the name of the employee from the list and press respective button to perfom actions</p>
+{{/asideMenuName}}
+
+{{#asideMenuName "/addemployee"}}
+    <h2>Add Employees</h2>
+    <p>Add an employee to the database</p>
+{{/asideMenuName}}
+
+{{#asideMenuName "/batchupload"}}
+    <h2>Batch Upload</h2>
+    <p>Batch upload information of employees in CSV file</p>
+{{/asideMenuName}}
+{{#asideMenuName "/images"}}
+    <h2>Images</h2>
+    <p>Images of the employees</p>
+{{/asideMenuName}}
