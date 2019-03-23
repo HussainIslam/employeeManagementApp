@@ -1,12 +1,5 @@
-const mongoose = require('mongoose');
-const Sequelize = require('sequelize');
-const uri = "mongodb://localhost:27017/restful";
-const Schema = mongoose.Schema;
-var connection = mongoose.connection;
-mongoose.connect(uri,{useNewUrlParser: true})
-.then(()=>{ console.log(`Database Connection Established`); })
-.catch((error)=>{ console.log(`There was an error while connecting to database: ${error}`); })
 //setting up postgres database
+const Sequelize = require('sequelize');
 const database = 'd448k1e1jhqtme';
 const user = 'immoiarwcfrcgb';
 const password = '86a026e29a81311609d496e7719cbfd71c3ae905c1b534f06c390f03f42355a5';
@@ -21,7 +14,7 @@ var sequelize = new Sequelize(database, user, password,{
 });
 
 var Employee = sequelize.define('Employee',{
-    employeeNum: {
+    id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -45,7 +38,10 @@ var Employee = sequelize.define('Employee',{
 module.exports.initializeDatabase = ()=>{
     return new Promise((resolve,reject)=>{
         sequelize.sync()
-        .then(()=>resolve())
+        .then(()=>{
+            console.log("Connected to postgres database");
+            resolve();
+        })
         .catch(error=>reject("Unable to sync with the employee database"));
     })
 }
@@ -59,6 +55,44 @@ module.exports.getAllEmployees =()=>{
     })
 }
 
+// fetch one employee by id from postgres
+module.exports.getEmployeeById = idNumber=>{
+    return new Promise((resolve,reject)=>{
+        Employee.findAll({ where: { id: idNumber }})
+        .then(data=>resolve(data[0]))
+        .catch(error=>reject(`No results found for employee number: ${idNumber}. Error: ${error}`))
+    })
+}
+
+// add new employee to postgres
+module.exports.addEmployee = employeeData =>{
+    return new Promise((resolve,reject)=>{
+        Employee.create(employeeData)
+        .then(()=> resolve(`Employee successfully added to database`))
+        .catch(error=> reject(`Unable to create new employee. Error: ${error}`))
+    })
+}
+
+// delete one employee based on id from postgres
+module.exports.deleteEmployee = idNumber=>{
+    return new Promise((resolve,reject)=>{
+        Employee.destroy({ where: { id: idNumber}})
+        .then(()=>resolve(`Successfully deleted information of employee number: ${idNumber}`))
+        .catch(error=> reject(`Unable to delete information of employee number: ${idNumber}. Error: ${error}`))
+    })
+}
+
+// query employee id, fName, lName for menu in employees.hbs from porstgres
+module.exports.populateMenu = ()=>{
+    return new Promise((resolve,reject)=>{
+        Employee.findAll({ attributes: ['id','fName','lName'] })
+        .then(data=> resolve(data))
+        .catch(error=> reject(`Unable to query all employee data to populate menu. Error: ${error}`))
+    })
+}
+
+// legacy mongodb section
+/*
 var EmployeeDB = new Schema({
     fName: String,
     lName: String,
@@ -126,8 +160,12 @@ var insertData = (data) =>{
     });
 }
 
+
     
 module.exports = EmployeeDB;
+
 module.exports = {
     insertData: insertData
 }
+
+*/

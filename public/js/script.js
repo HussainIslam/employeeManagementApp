@@ -35,8 +35,8 @@ window.addEventListener('load',()=>{
             httpRequest.onreadystatechange = () =>{
                 if(httpRequest.readyState === 4){
                     if(httpRequest.status === 200){
-                        var empData = JSON.parse(httpRequest.responseText).employee[0];
-                        document.querySelector("#tableID").innerHTML = empData._id;
+                        var empData = JSON.parse(httpRequest.responseText).employee;
+                        document.querySelector("#tableID").innerHTML = empData.id;
                         document.querySelector("#tablefName").innerHTML = empData.fName;
                         document.querySelector("#tablelName").innerHTML = empData.lName;
                         document.querySelector("#tableEmail").innerHTML = empData.email;

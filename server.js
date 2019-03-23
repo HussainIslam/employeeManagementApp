@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const utilities = require('./utilities');
 const utilities_db = require('./utilities_employee_database');
@@ -25,11 +24,8 @@ const bulkstorage = multer.diskStorage({
 var bulkupload = multer({storage: bulkstorage});
 var imageupload = multer({storage: imagestorage });
 
-mongoose.set('useFindAndModify', false);
-const Schema = mongoose.Schema;
 const HTTP_PORT = process.env.PORT || 8080;
 app.use(bodyParser.json());
-var database = mongoose.model("employeedb",utilities_db.employeedb);
 
 app.engine('.hbs',exphbs({
     extname: '.hbs',
@@ -58,86 +54,60 @@ app.use((request,response,next)=>{
 app.get("/",(request,response)=>{
     response.render('index');
 });
-
+//get information of all employees from postgres
 app.get("/getAllEmployees",(request,response)=>{
     utilities_db.getAllEmployees()
     .then(data=> response.render("getAllEmployees", {employees: data}))
     .catch(error=> response.render("getAllEmployees", {errorMessage: error}))
 });
-
+//route not yet used
 app.get("/employees",(request,response)=>{
-    database.find({})
-    .exec()
-    .then((data)=>{
-        response.render('employees',{
-            employee: data
-        });
-    })
-    .catch((error)=>{
-        response.send(error);
-    });
+    utilities_db.populateMenu()
+    .then(data=> response.render('employees',{ employee: data}))
+    .catch(error=> response.render('employees', { errorMessage: error}))
 });
-
+//route to query one employee by id
 app.post("/employees",(request,response)=>{
-    database.find({_id: request.body.id})
-    .exec()
-    .then((data)=>{
-        response.json({ employee: data });
-    })
-    .catch((error)=>{
-        response.json({ message: error });
-    });
+    utilities_db.getEmployeeById(request.body.id)
+    .then(data=> response.json({employee: data}))
+    .catch(error=> response.json({errorMessage: error}))
 });
-
+//delete one employee from postgres
 app.delete("/employees",(request,response)=>{
-    database.deleteOne({_id: request.body.id})
-    .exec()
-    .then((data)=>{
-        response.json({message: "Data deleted"});
-    })
-    .catch((error)=>{
-        response.json({error: "There was an error"});
-    })
+    utilities_db.deleteEmployee(request.body.id)
+    .then(data=> response.json({ message: data}))
+    .catch(error=> response.json({errorMessage: error}))
 });
 
 app.put("/employees",(request,response)=>{
-    console.log("The first one is working");
     response.redirect('/updateemployee');
     response.json({message: "Data updated"});
 });
 
 app.get("/updateemployee",(request,response)=>{
-    console.log("the second one is also working");
-    //response.json({message: "data updated"});
     response.render('updateEmployee');
 });
 
 app.get("/addemployee",(request,response)=>{
     response.render('addemployee');
 });
-
+//post employee data to the employee database
 app.post("/addemployee",imageupload.single('employeeimage'),(request,response,next)=>{
-    utilities_db.insertData(request.body)
-    .then((data)=>{
-        console.log(data);
-        response.redirect('/');
-    })
-    .catch((error)=>{
-        response.json({error: error});
-    })
+    utilities_db.addEmployee(request.body)
+    .then(data=> response.redirect('/'))
+    .catch(error=> response.render("addEmployee",{errorMessage: error}))
 });
 
 app.get("/batchupload",(request,response)=>{
-    //utilities.fileRead();
     response.render("batchupload");
 });
 
 app.post("/batchupload",bulkupload.single('datafile'),(request,response)=>{
     var successful = 0;
     utilities.fileRead()
-    .then((data)=>{
+    .then(data=>{
         for(let i = 0; i < data.length; i++){
-            utilities_db.insertData(data[i])
+            utilities_db.addEmployee(data[i])
             .then(()=>{
                 successful++;
                 if( i == data.length -1 ){
@@ -158,7 +128,6 @@ app.post("/batchupload",bulkupload.single('datafile'),(request,response)=>{
 app.get("/images",(request,response)=>{
     utilities.getAllImages()
     .then((data)=>{
-        //console.log(data);
         response.render('images',{
             images: data
         })
@@ -172,6 +141,6 @@ app.get("/images",(request,response)=>{
     //response.render('images');
 });
 
-app.listen(HTTP_PORT,()=>{
-    console.log(`Server is listening to port ${HTTP_PORT}`);
-});
+utilities_db.initializeDatabase()
+.then(app.listen(HTTP_PORT,()=> console.log(`Server is listening to port ${HTTP_PORT}`)))
+.catch(error=> console.log(msg))
