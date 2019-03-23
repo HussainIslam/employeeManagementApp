@@ -1,0 +1,20 @@
+Host
+ec2-54-221-236-144.compute-1.amazonaws.com
+
+Database
+d448k1e1jhqtme
+
+User
+immoiarwcfrcgb
+
+Port
+5432
+
+Password
+86a026e29a81311609d496e7719cbfd71c3ae905c1b534f06c390f03f42355a5
+
+URI
+postgres://immoiarwcfrcgb:86a026e29a81311609d496e7719cbfd71c3ae905c1b534f06c390f03f42355a5@ec2-54-221-236-144.compute-1.amazonaws.com:5432/d448k1e1jhqtme
+
+Heroku CLI
+heroku pg:psql postgresql-animate-59965 --app serene-gorge-25201
