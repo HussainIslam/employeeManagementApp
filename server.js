@@ -87,8 +87,8 @@ app.get('/login',(request,response)=>{
 app.post('/login',(request,response)=>{
     const user = request.body.username;
     const pass = request.body.password;
-    console.log(`Username: ${userdetails.username}, Password: ${userdetails.password}`);
-    console.log(`Username: ${user}, Password: ${pass}`);
+    //console.log(`Username: ${userdetails.username}, Password: ${userdetails.password}`);
+    //console.log(`Username: ${user}, Password: ${pass}`);
     if(user === "" || pass === ""){
         response.render('login', { errorMessage: `Enter both username and password`})
     }
@@ -100,7 +100,7 @@ app.post('/login',(request,response)=>{
         response.redirect('/');
     }
     else{
-        console.log(`username or password did not match`);
+        //console.log(`username or password did not match`);
         response.render('login',{ errorMessage: "Invalid username or password"})
     }
 });
