@@ -6,6 +6,28 @@ const utilities = require('./utilities');
 const utilities_db = require('./utilities_employee_database');
 const multer = require('multer');
 const exphbs = require('express-handlebars');
+const clientSessions = require('client-sessions');
+
+// Setting up client sessions 
+app.use(clientSessions({
+    cookieName: "session",
+    secret: "personalprojectemployeemanagementsystem",
+    duration: 5 * 60 * 1000, //duration of the session in milisecond
+    activeDuration: 1000 * 60
+}));
+
+// testing user object
+const userdetails = {
+    username: "hussain",
+    password: "123",
+    authorization: "admin"
+}
+
+// middleware to ensure login
+const ensureLogin = (request,response,next)=>{
+    if(!request.session.sessionUser) response.redirect('/login');
+    else(next());
+}
 //defining multer diskStorage for employee images
 const imagestorage = multer.diskStorage({
     destination: "./public/empImages",
@@ -13,6 +35,7 @@ const imagestorage = multer.diskStorage({
         cb(null,Date.now() + path.extname(file.originalname));
     }
 });
+
 //defining multer diskStorage for bulk employee information upload
 const bulkstorage = multer.diskStorage({
     destination: "./public/datadirectory",
@@ -26,6 +49,7 @@ var imageupload = multer({storage: imagestorage });
 
 const HTTP_PORT = process.env.PORT || 8080;
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.engine('.hbs',exphbs({
     extname: '.hbs',
@@ -54,55 +78,88 @@ app.use((request,response,next)=>{
 app.get("/",(request,response)=>{
     response.render('index');
 });
+
+// get route to send user the login page
+app.get('/login',(request,response)=>{
+    response.render('login');
+});
+
+app.post('/login',(request,response)=>{
+    const user = request.body.username;
+    const pass = request.body.password;
+    console.log(`Username: ${userdetails.username}, Password: ${userdetails.password}`);
+    console.log(`Username: ${user}, Password: ${pass}`);
+    if(user === "" || pass === ""){
+        response.render('login', { errorMessage: `Enter both username and password`})
+    }
+    if(user === userdetails.username && pass === userdetails.password){
+        request.session.sessionUser = {
+            username: userdetails.username,
+            email: userdetails.email
+        };
+        response.redirect('/');
+    }
+    else{
+        console.log(`username or password did not match`);
+        response.render('login',{ errorMessage: "Invalid username or password"})
+    }
+});
+
+app.get("/logout",(request,response)=>{
+    request.session.reset();
+    response.redirect("/login");
+});
+
+
 //get information of all employees from postgres
-app.get("/getAllEmployees",(request,response)=>{
+app.get("/getAllEmployees",ensureLogin,(request,response)=>{
     utilities_db.getAllEmployees()
     .then(data=> response.render("getAllEmployees", {employees: data}))
     .catch(error=> response.render("getAllEmployees", {errorMessage: error}))
 });
 //route not yet used
-app.get("/employees",(request,response)=>{
+app.get("/employees",ensureLogin,(request,response)=>{
     utilities_db.populateMenu()
     .then(data=> response.render('employees',{ employee: data}))
     .catch(error=> response.render('employees', { errorMessage: error}))
 });
 //route to query one employee by id
-app.post("/employees",(request,response)=>{
+app.post("/employees",ensureLogin,(request,response)=>{
     utilities_db.getEmployeeById(request.body.id)
     .then(data=> response.json({employee: data}))
     .catch(error=> response.json({errorMessage: error}))
 });
 //delete one employee from postgres
-app.delete("/employees",(request,response)=>{
+app.delete("/employees",ensureLogin,(request,response)=>{
     utilities_db.deleteEmployee(request.body.id)
     .then(data=> response.json({ message: data}))
     .catch(error=> response.json({errorMessage: error}))
 });
 
-app.put("/employees",(request,response)=>{
+app.put("/employees",ensureLogin,(request,response)=>{
     response.redirect('/updateemployee');
     response.json({message: "Data updated"});
 });
 
-app.get("/updateemployee",(request,response)=>{
+app.get("/updateemployee",ensureLogin,(request,response)=>{
     response.render('updateEmployee');
 });
 
-app.get("/addemployee",(request,response)=>{
+app.get("/addemployee",ensureLogin,(request,response)=>{
     response.render('addemployee');
 });
 //post employee data to the employee database
-app.post("/addemployee",imageupload.single('employeeimage'),(request,response,next)=>{
+app.post("/addemployee",ensureLogin,imageupload.single('employeeimage'),(request,response,next)=>{
     utilities_db.addEmployee(request.body)
     .then(data=> response.redirect('/'))
     .catch(error=> response.render("addEmployee",{errorMessage: error}))
 });
 
-app.get("/batchupload",(request,response)=>{
+app.get("/batchupload",ensureLogin,(request,response)=>{
     response.render("batchupload");
 });
 
-app.post("/batchupload",bulkupload.single('datafile'),(request,response)=>{
+app.post("/batchupload",ensureLogin,bulkupload.single('datafile'),(request,response)=>{
     var successful = 0;
     utilities.fileRead()
     .then(data=>{
@@ -125,7 +182,7 @@ app.post("/batchupload",bulkupload.single('datafile'),(request,response)=>{
     })
 });
 
-app.get("/images",(request,response)=>{
+app.get("/images",ensureLogin,(request,response)=>{
     utilities.getAllImages()
     .then((data)=>{
         response.render('images',{
