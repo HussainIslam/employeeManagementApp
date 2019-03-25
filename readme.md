@@ -9,7 +9,10 @@ I am creating a employee management system for companies. Till this far, I have 
   * Ajax
   * JSON
   * RESTful API
-  * Mongoose.js
+  * PostgreSql
+  * Mongoose.js (currently not used)
   * Express-handlebars
   * Body-parser
   * Multer
+  * Sequelize (npm module)
+  * Client-session (npm module)
