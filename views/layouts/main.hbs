@@ -23,6 +23,12 @@
                 {{#navLink "/images"}}Images{{/navLink}}
             </div>
         </div>
+        {{#if user}}
+            Welcome! {{user.username}}&ensp;&ensp;&ensp;&ensp;
+            <a class="btn btn-warning float-right" href="/logout" role="button">Logout</a>
+        {{else}}
+            <a class="btn btn-warning float-right" href="/login" role="button">Login</a>
+        {{/if}}
     </nav>
     <div class="container">
         <div class="row">

@@ -26,7 +26,10 @@ const userdetails = {
 // middleware to ensure login
 const ensureLogin = (request,response,next)=>{
     if(!request.session.sessionUser) response.redirect('/login');
-    else(next());
+    else{
+        app.locals.user = request.session.sessionUser;
+        next();
+    }
 }
 //defining multer diskStorage for employee images
 const imagestorage = multer.diskStorage({
@@ -76,7 +79,8 @@ app.use((request,response,next)=>{
 });
 
 app.get("/",(request,response)=>{
-    response.render('index');
+    console.log(request.session.sessionUser);
+    response.render('index',{ user: request.session.sessionUser});
 });
 
 // get route to send user the login page
@@ -95,7 +99,7 @@ app.post('/login',(request,response)=>{
     if(user === userdetails.username && pass === userdetails.password){
         request.session.sessionUser = {
             username: userdetails.username,
-            email: userdetails.email
+            authorization: userdetails.authorization
         };
         response.redirect('/');
     }
