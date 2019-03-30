@@ -16,3 +16,4 @@ I am creating a employee management system for companies. Till this far, I have 
   * Multer
   * Sequelize (npm module)
   * Client-session (npm module)
+  * SSL Certificate
