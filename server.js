@@ -1,3 +1,6 @@
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -7,6 +10,14 @@ const utilities_db = require('./utilities_employee_database');
 const multer = require('multer');
 const exphbs = require('express-handlebars');
 const clientSessions = require('client-sessions');
+const HTTP_PORT = process.env.PORT || 8080;
+const HTTPS_PORT = 4433;
+//creating certificate
+const https_options = {
+    key: fs.readFileSync(`${__dirname}/server.key`),
+    cert: fs.readFileSync(`${__dirname}/server.cert`)
+};
+
 
 // Setting up client sessions 
 app.use(clientSessions({
@@ -50,7 +61,6 @@ const bulkstorage = multer.diskStorage({
 var bulkupload = multer({storage: bulkstorage});
 var imageupload = multer({storage: imagestorage });
 
-const HTTP_PORT = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -202,6 +212,11 @@ app.get("/images",ensureLogin,(request,response)=>{
     //response.render('images');
 });
 
+
 utilities_db.initializeDatabase()
-.then(app.listen(HTTP_PORT,()=> console.log(`Server is listening to port ${HTTP_PORT}`)))
-.catch(error=> console.log(msg))
+.then(()=>{
+    http.createServer(app).listen(HTTP_PORT,()=>console.log(`Server is listening to ${HTTP_PORT}`));
+    https.createServer(https_options,app).listen(HTTPS_PORT,()=>console.log(`Server is listening to ${HTTPS_PORT}`));
+    }
+)
+.catch(error=>console.log(error));
