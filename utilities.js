@@ -22,6 +22,7 @@ function createObj (firstName,lastName,email,designation,department,address1,add
     }
     return obj;
 }
+//extracts fields from a string
 var extractFields = (string)=>{
     let data = new createObj ();
     for(var property in data){
@@ -29,7 +30,6 @@ var extractFields = (string)=>{
             if(string.indexOf(',')>=0){
                 data[property] = string.substring(0,string.indexOf(','));
             }else{
-                //console.log("i am here");
                 data[property] = string.substring(0,string.indexOf('\n'));
             }
             string = string.replace(`${data[property]},`,'');
@@ -37,7 +37,8 @@ var extractFields = (string)=>{
     }
     return data;
 }
-
+//read a csv file line by line and extract the fields from the file
+//using the extractFields function, which is then pushed to objArray
 var readLines = (filename)=>{
     var rl = readline.createInterface({
         input: fs.createReadStream(`./public/datadirectory/${filename}`),
@@ -53,6 +54,7 @@ var readLines = (filename)=>{
     })
 }
 
+//remove the csv file from the server and return a promise
 var removeDataFile = (filename)=>{
     return new Promise((resolve,reject)=>{
         fs.unlink(`./public/datadirectory/${filename}`,(error)=>{
@@ -60,7 +62,7 @@ var removeDataFile = (filename)=>{
         })
     })
 }
-
+//this module is use to read all the images from the images folder
 module.exports.getAllImages = () =>{
     return new Promise((resolve,reject)=>{
         fs.readdir("./public/empImages",(error,data)=>{
@@ -74,17 +76,14 @@ module.exports.getAllImages = () =>{
     })
 }
 
+//read the dataDirectory and read the file in it.
+//there has to be only one file in it that has just 
+//been uploaded for reading purposes
 module.exports.fileRead = ()=>{
     var readDirectory = ()=>{
         return new Promise((resolve,reject)=>{
             fs.readdir("./public/datadirectory",(error,data)=>{
-                //error ? reject(error) : resolve(data);
-                if(error){
-                    reject(error);
-                } else{
-                    console.log(data);
-                    resolve(data);
-                }
+                error ? reject(error) : resolve(data);
             });
         })
     }

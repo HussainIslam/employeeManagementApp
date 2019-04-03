@@ -88,8 +88,9 @@ app.use((request,response,next)=>{
     next(); 
 });
 
+/* ***** ALL THE ROUTES START FROM HERE ***** */
+
 app.get("/",(request,response)=>{
-    console.log(request.session.sessionUser);
     response.render('index',{ user: request.session.sessionUser});
 });
 
@@ -101,8 +102,6 @@ app.get('/login',(request,response)=>{
 app.post('/login',(request,response)=>{
     const user = request.body.username;
     const pass = request.body.password;
-    //console.log(`Username: ${userdetails.username}, Password: ${userdetails.password}`);
-    //console.log(`Username: ${user}, Password: ${pass}`);
     if(user === "" || pass === ""){
         response.render('login', { errorMessage: `Enter both username and password`})
     }
